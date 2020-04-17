@@ -1,79 +1,29 @@
-import java.text.SimpleDateFormat;
 import java.util.Scanner;
-
-/**
-* Created by: Callan Farrell.
-* Created on: Feburary 24 2020
-*/
-
 class DateCalculator {
-
+  
+  final static String[] DAYS = { "Saturday", "Sunday", "Monday", "Tuesday", "wednesday", "Thursday", "Friday" };
+ 
   public static void main(String[] args) {
 
-    System.out.println("Enter the date in (dd/mm/yyyy) format, to recieve the day of the week:");
-    Scanner scan = new Scanner(System.in);
-    String time = scan.nextLine();
+    Scanner input = new java.util.Scanner(System.in);
+    System.out.println("Enter the date in DD/MM/YYYY format: ");
 
-    try {
-      boolean dateValid = dateValidate(time);
+    String[] dates = input.nextLine().split("/");
+    int d = Integer.parseInt(dates[0]);
+    int m = Integer.parseInt(dates[1]);
+    int y = Integer.parseInt(dates[2]);
 
-      if (dateValid == true) {
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");  
-        java.util.Date date = df.parse(time);   
-        df.applyPattern("EEE");  
-        String day = df.format(date); 
+    if (m < 3) {
+        m += 12;
+        y-= 1;
 
-        if (day.compareTo("Sat") == 0 || day.compareTo("Sun") == 0) {
-          System.out.println(day + ": Weekend");
-        } else {
-          System.out.println(day + ": Weekday");
-        }
-      } else {
-        System.out.println("Invalid Date!!!");
-      }
-    } catch (Exception e) {
-      System.out.println("Invalid Date Formats!!!");
-    }
-  }
+    }  
 
-  public static boolean dateValidate(String d) {
+    int k = y % 100;
+    int j = y / 100;
 
-    String[] dateArray = d.split("/");
-    int day = Integer.parseInt(dateArray[0]);
-    int month = Integer.parseInt(dateArray[1]);
-    int year = Integer.parseInt(dateArray[2]);
-    System.out.print(day + "\n" + month + "\n" + year + "\n");
-    boolean leapYear = false;
+    int day = ((d + (((m + 1) * 26) / 10) + k + (k / 4) + (j / 4)) + (5 * j)) % 7;
 
-    if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)) {
-      leapYear = true;
-    }
-
-    if (year > 2099 || year < 1900) {
-      return false;
-    }
-    if (month < 13) {
-      if (month == 1 | month == 3 | month == 5 | month == 7 | month == 8 | month == 10 | month == 12) {
-        if (day > 31) {
-          return false;
-        }
-      } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-        if (day > 30) {
-          return false; 
-        }
-      } else if (leapYear == true && month == 2) {
-        if (day > 29) {
-          return false;
-        }
-      } else if (leapYear == false && month == 2) {
-        if (day > 28) {
-          return false;
-        }
-      }
-
-      return true;    
-    } else {
-      return false; 
-    }
+    System.out.println("That date was a " + DAYS[day]); 
   }
 }
